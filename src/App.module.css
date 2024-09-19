@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  width: 480px;
+  height: 560px;
+  align-items: flex-start;
+  background: #fff;
+}
+.content {
+  display: flex;
+  padding-bottom: 27px;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1 0 0;
+  align-self: stretch;
+  border: 1px solid var(--Schemes-Outline-Variant, #3c2f49);
+}

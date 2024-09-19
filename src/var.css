@@ -1,0 +1,20 @@
+@import url("https://fonts.googleapis.com/css2?family=Varela+Round&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Righteous&display=swap");
+
+:root {
+  /* Color*/
+  --main-text-color: #ffff;
+  --color-bright: #ffa733;
+  --color-secondary: #5ab1bb;
+  --color-background: #2659a6;
+  --color-light: #fbfbf2;
+  --color-dark-grey: #484041;
+  --color-blue: rgba(16, 152, 247);
+  --color-dark-blue: #3c2f49;
+  --color-light-grey: #ece6f0;
+
+  /* Font */
+  --font-roboto: "Roboto", sans-serif;
+  --font-varela: "Varela Round", sans-serif;
+  --font-righteous: "Righteous", sans-serif;
+}

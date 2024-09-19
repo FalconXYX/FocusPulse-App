@@ -1,0 +1,35 @@
+@import "../../var.css";
+.card {
+  display: flex;
+  height: 159px;
+  min-width: 240px;
+  max-width: 560px;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 28px;
+  border-color: #49454f;
+  border-width: 2px;
+  border: 1px solid var(--Schemes-Outline-Variant, var(--color-dark-blue));
+  box-shadow: 3px 3px 3px var(--color-dark-blue);
+}
+.card_text {
+  display: flex;
+  width: 240px;
+  padding: 1px 12px 1px 24px;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.card p {
+  color: var(--Schemes-On-Surface-Variant, #49454f);
+  font-family: var(--font-roboto);
+  font-size: var(--Body-Medium-Size, 14px);
+  font-style: normal;
+  font-weight: 350;
+  letter-spacing: var(--Body-Medium-Tracking, 0.25px);
+  align-self: stretch;
+  line-height: var(--Body-Medium-Line-Height, 20px);
+}
+.button {
+  margin-left: 150px;
+}

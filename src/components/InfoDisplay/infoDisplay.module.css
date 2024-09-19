@@ -1,0 +1,115 @@
+@import "../../var.css";
+.card {
+  display: flex;
+  width: 198px;
+  height: 250px;
+  flex-direction: column;
+  align-items: center;
+
+  border-radius: 28px;
+  border: 1px solid var(--Schemes-Outline-Variant, var(--color-dark-blue));
+}
+
+/* Right shadow (2px 2px) */
+.rightShadow {
+  box-shadow: 2px 2px var(--color-dark-blue);
+}
+
+/* Left shadow (-2px 2px) */
+.leftShadow {
+  box-shadow: -2px 2px var(--color-dark-blue);
+}
+.header {
+  display: flex;
+  align-items: flex-start;
+  align-self: stretch;
+  color: var(--Schemes-On-Surface-Variant, #49454f);
+  padding-top: 15px;
+  padding-left: 15px;
+
+  /* M3/label/large */
+  font-family: var(--font-roboto);
+  font-size: var(--Label-Large-Size, 18px);
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: var(--Label-Large-Tracking, 0.1px);
+}
+.bars {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.number_section {
+  display: flex;
+  padding: 0px 5px;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  align-self: stretch;
+}
+.number_card {
+  display: flex;
+  width: 85px;
+  height: 103px;
+  flex-direction: column;
+  align-items: center;
+
+  border-radius: 28px;
+  background: var(
+    --State-Layers-On-Primary-Fixed-Variant-Opacity-12,
+    rgba(79, 55, 139, 0.12)
+  );
+}
+.streak_number_container {
+  display: flex;
+  padding: 13px 0px 5px 0px;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  align-self: stretch;
+}
+.streak_number {
+  color: #1399f7;
+  text-align: center;
+  font-family: var(--font-righteous);
+  font-size: var(--Display-Large-Size, 57px);
+  font-style: normal;
+  font-weight: 400;
+  line-height: 64px; /* 112.281% */
+  letter-spacing: -0.25px;
+}
+
+.streak_text {
+  width: 72px;
+  color: #49454f;
+  font-family: var(--font-roboto);
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 8px; /* 100% */
+  margin-left: 5px;
+}
+
+.minute_number {
+  color: #1399f7;
+  text-align: center;
+  font-family: var(--font-righteous);
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 64px; /* 177.778% */
+  letter-spacing: -0.25px;
+}
+
+.minute_text {
+  color: #49454f;
+  text-align: center;
+  font-family: var(--font-roboto);
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 8px; /* 100% */
+  margin-left: 2px;
+}

@@ -1,0 +1,40 @@
+@import "../../var.css";
+.container {
+  display: flex;
+  padding: 4px 8px 0px 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  align-self: stretch;
+}
+.text {
+  display: flex;
+  padding: 4px 8px 0px 0px;
+  align-items: center;
+  gap: 10px;
+  align-self: stretch;
+  color: var(--Schemes-On-Surface-Variant, #49454f);
+}
+.name {
+  /* M3/label/medium */
+  font-family: var(--font-roboto);
+  font-size: var(--Label-Medium-Size, 12px);
+  font-style: normal;
+  font-weight: 500;
+  line-height: var(--Label-Medium-Line-Height, 16px); /* 133.333% */
+  letter-spacing: var(--Label-Medium-Tracking, 0.5px);
+}
+.time {
+  width: 51px;
+  color: var(--Schemes-On-Surface-Variant, #49454f);
+  /* M3/label/medium */
+  font-family: var(--font-roboto);
+  font-size: var(--Label-Medium-Size, 14px);
+  font-style: normal;
+  font-weight: 500;
+  line-height: var(--Label-Medium-Line-Height, 16px); /* 133.333% */
+  letter-spacing: var(--Label-Medium-Tracking, 0.5px);
+}
+.bar {
+  width: 168px;
+}

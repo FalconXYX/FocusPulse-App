@@ -1,0 +1,20 @@
+@import "../../var.css";
+.container {
+  display: flex;
+  padding: 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  align-self: stretch;
+}
+.top {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+.main {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  gap: 45px;
+}
