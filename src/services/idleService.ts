@@ -26,7 +26,7 @@ console.log("idle script loaded");
 //   }
 // }, 1000);
 
-export class IdleService {
+class IdleService {
   timeIdle: number;
   idleStart: number;
   leeway: number;
@@ -51,3 +51,4 @@ export class IdleService {
     this.timeIdle = 0;
   }
 }
+export default IdleService;

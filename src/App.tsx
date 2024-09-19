@@ -5,11 +5,9 @@ import Header from "./components/Header/header.tsx";
 import MainBody from "./components/MainBody/mainBody.tsx";
 import SettingBody from "./components/SettingBody/settingBody.tsx";
 import GraphBody from "./components/GraphBody/graphBody.tsx";
-import Main from "./services/main.ts";
 function App() {
   const pageState = 0;
-  console.log("App component loaded");
-  Main();
+
   return (
     <>
       <section className={styles.container}>

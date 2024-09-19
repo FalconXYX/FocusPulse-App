@@ -5,7 +5,11 @@
   "description": "Base Level Extension",
   "action": {
     "default_popup": "index.html",
-    "default_icon": "assets/Logo-DJjvocO9.png"
+    "default_icon": "Logo-DJjvocO9.png"
   },
-  "permissions": ["scripting", "tabs", "activeTab"]
+  "permissions": ["scripting", "history", "storage"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
 }

@@ -1,0 +1,9 @@
+{
+  "button": 1,
+  "leeway": 180000,
+  "presetName": "Timer",
+  "breakLength": 180000,
+  "hasBreak": true,
+  "streakLength": 600000,
+  "isDefault": false
+}

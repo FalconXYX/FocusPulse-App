@@ -1,0 +1,9 @@
+{
+  "button": 2,
+  "leeway": 300000,
+  "presetName": "Pomodoro",
+  "breakLength": 300000,
+  "hasBreak": true,
+  "streakLength": 1500000,
+  "isDefault": true
+}

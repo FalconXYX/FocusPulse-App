@@ -1,0 +1,9 @@
+{
+  "button": 3,
+  "leeway": 300000,
+  "presetName": "Globe",
+  "breakLength": 600000,
+  "hasBreak": true,
+  "streakLength": 3600000,
+  "isDefault": false
+}

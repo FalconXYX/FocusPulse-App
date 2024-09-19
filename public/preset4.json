@@ -1,0 +1,9 @@
+{
+  "button": 4,
+  "leeway": 120000,
+  "presetName": "Clock",
+  "breakLength": 60000,
+  "hasBreak": true,
+  "streakLength": 300000,
+  "isDefault": false
+}
