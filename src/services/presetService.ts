@@ -42,6 +42,9 @@ class PresetService {
   getPresetName = () => {
     return this.presetName;
   };
+  getPresetExport = () => {
+    return "preset" + this.button;
+  };
   getButton = () => {
     return this.button;
   };

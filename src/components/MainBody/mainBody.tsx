@@ -6,14 +6,15 @@ import styles from "./mainBody.module.css";
 import PresetButtons from "../PresetButtons/presetButtons.tsx";
 import InfoDisplay from "../InfoDisplay/infoDisplay";
 import NumberDisplay from "../NumberDisplay/numberDisplay";
-
-const MainBody: React.FC = () => {
-  let pageState = 0;
+interface MainBodyProps {
+  buttonState: number;
+}
+const MainBody: React.FC<MainBodyProps> = ({ buttonState }) => {
   return (
     <section className={styles.container}>
       <div className={styles.top}>
         <TextCard></TextCard>
-        <PresetButtons presetState={pageState}></PresetButtons>
+        <PresetButtons presetState={buttonState}></PresetButtons>
       </div>
       <div className={styles.main}>
         <InfoDisplay
