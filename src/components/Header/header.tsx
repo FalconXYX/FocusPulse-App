@@ -21,12 +21,12 @@ const Header: React.FC<CustomIconButtonProps> = () => {
 
   const handleClick2 = () => {
     setButtonStates([false, true, false]);
-    navigate("/settings");
+    navigate("/graph");
   };
 
   const handleClick3 = () => {
     setButtonStates([false, false, true]);
-    navigate("/graph");
+    navigate("/settings");
   };
 
   return (
