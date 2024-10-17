@@ -42,15 +42,7 @@ class PresetService {
   getPresetName = () => {
     return this.presetName;
   };
-  getPresetExport = () => {
-    return "preset" + this.button;
-  };
-  getButton = () => {
-    return this.button;
-  };
-  getisDefault = () => {
-    return this.isDefault;
-  };
+
   editLeeway = (leeway: number) => {
     if (leeway >= 60000 && leeway <= 600000) {
       this.leeway = leeway;
@@ -60,7 +52,7 @@ class PresetService {
     }
   };
   editBreakLength = (breakLength: number) => {
-    if (breakLength >= 0 && breakLength <= 1800000) {
+    if (breakLength >= 0 && breakLength <= 600000) {
       this.breakLength = breakLength;
       if (breakLength === 0) {
         this.hasBreak = false;

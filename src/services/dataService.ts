@@ -1,15 +1,10 @@
-// class DataService {
-//   constructor(type: number) {
-//     if (type === 0) {
-//       this.getTodayData();
-//     } else {
-//       this.getCurrentData();
-//     }
-//   }
+// export class CurrentStreakData {
+//   CurrentDay: DayStreakData;
 
-//   getTodayData = async () => {};
-//   getCurrentData = async () => {};
-//   setTodayData = async () => {};
-//   setCurrentData = async () => {};
+//   constructor(day: DayStreakData) {
+//     this.CurrentDay = day;
+//   }
 // }
-// export default DataService;
+// export class DayStreakData {
+//   constructor(type: number) {}
+// }

@@ -4,12 +4,12 @@ import {
   getCurrentPreset,
   changePreset,
   formatTime,
+  modifyPreset,
 } from "../../services/main";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import PresetButtons from "../PresetButtons/presetButtons";
 import styles from "./settingBody.module.css";
-
 interface SettingBodyProps {}
 
 const SettingBody: React.FC<SettingBodyProps> = () => {
@@ -85,6 +85,16 @@ const SettingBody: React.FC<SettingBodyProps> = () => {
     if (presetName !== undefined) {
       setPresetName(presetName.toString());
     }
+  }
+  async function editPreset(): Promise<void> {
+    const data = {
+      name: presetName,
+      streakLength: streakLength,
+      breakLength: breakLength,
+      leeway: leeway,
+    };
+    const recive = await modifyPreset(data);
+    console.log(recive);
   }
   return (
     <section className={styles.body}>
@@ -164,7 +174,11 @@ const SettingBody: React.FC<SettingBodyProps> = () => {
             >
               Reset
             </Button>
-            <Button variant="contained" size="small">
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => editPreset()}
+            >
               Apply
             </Button>
           </div>
