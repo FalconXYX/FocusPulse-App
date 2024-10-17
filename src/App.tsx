@@ -6,14 +6,12 @@ import SettingBody from "./components/SettingBody/settingBody.tsx";
 import GraphBody from "./components/GraphBody/graphBody.tsx";
 
 function App() {
-  const pageState = 0;
-
   return (
     <>
       <section className={styles.container}>
         <div className={styles.content}>
           <Router basename={"/"}>
-            <Header pageState={pageState}></Header>
+            <Header></Header>
             <Routes>
               <Route path="/" element={<MainBody></MainBody>} />
               <Route path="/settings" element={<SettingBody></SettingBody>} />

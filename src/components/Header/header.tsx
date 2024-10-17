@@ -1,6 +1,4 @@
-// src/components/Header.tsx
-
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -9,24 +7,28 @@ import InsertChartIcon from "@mui/icons-material/InsertChart";
 import { getImageUrl } from "../../utils.ts";
 import styles from "./header.module.css";
 import { Fab } from "@mui/material";
-interface CustomIconButtonProps {
-  pageState: number;
-}
 
-const Header: React.FC<CustomIconButtonProps> = ({ pageState }) => {
-  // eslint-disable-next-line prefer-const
-  let buttonStates = [false, false, false];
-  buttonStates[pageState] = true;
+interface CustomIconButtonProps {}
+
+const Header: React.FC<CustomIconButtonProps> = () => {
+  const [buttonStates, setButtonStates] = useState([true, false, false]);
   const navigate = useNavigate();
+
   const handleClick = () => {
+    setButtonStates([true, false, false]);
     navigate("/");
   };
+
   const handleClick2 = () => {
+    setButtonStates([false, true, false]);
     navigate("/settings");
   };
+
   const handleClick3 = () => {
+    setButtonStates([false, false, true]);
     navigate("/graph");
   };
+
   return (
     <section className={styles.container} id="about">
       <div className={styles.content}>
@@ -39,25 +41,25 @@ const Header: React.FC<CustomIconButtonProps> = ({ pageState }) => {
             onClick={handleClick}
             size="medium"
             color="primary"
-            disabled={false}
+            disabled={buttonStates[0]} // Disables button based on state
           >
-            <PlayArrowIcon></PlayArrowIcon>
-          </Fab>
-          <Fab
-            onClick={handleClick3}
-            size="medium"
-            color="primary"
-            disabled={false}
-          >
-            <InsertChartIcon></InsertChartIcon>
+            <PlayArrowIcon />
           </Fab>
           <Fab
             onClick={handleClick2}
             size="medium"
             color="primary"
-            disabled={false}
+            disabled={buttonStates[1]} // Disables button based on state
           >
-            <SettingsIcon></SettingsIcon>
+            <InsertChartIcon />
+          </Fab>
+          <Fab
+            onClick={handleClick3}
+            size="medium"
+            color="primary"
+            disabled={buttonStates[2]} // Disables button based on state
+          >
+            <SettingsIcon />
           </Fab>
         </div>
       </div>
