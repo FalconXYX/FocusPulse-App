@@ -52,7 +52,7 @@ class PresetService {
     }
   };
   editBreakLength = (breakLength: number) => {
-    if (breakLength >= 0 && breakLength <= 600000) {
+    if (breakLength >= 0 && breakLength <= 1200000) {
       this.breakLength = breakLength;
       if (breakLength === 0) {
         this.hasBreak = false;

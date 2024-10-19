@@ -32,22 +32,6 @@ export async function modifyPreset(
 ): Promise<boolean | string> {
   const currentPreset = await getCurrentPreset();
   const presetService = await loadPreset(currentPreset);
-  if (isInTimeFormat(data.streakLength)) {
-    const newStreakLength = parseTime(data.streakLength);
-    if (!presetService.editStreakLength(newStreakLength)) {
-      return "Streak Length Invalid!";
-    }
-  } else {
-    return "Streak Length Invalid";
-  }
-  if (isInTimeFormat(data.breakLength)) {
-    const newBreakLength = parseTime(data.breakLength);
-    if (!presetService.editBreakLength(newBreakLength)) {
-      return "Break Length Invalid!";
-    }
-  } else {
-    return "Break Length Invalid";
-  }
   if (isInTimeFormat(data.leeway)) {
     const newLeeway = parseTime(data.leeway);
     if (!presetService.editLeeway(newLeeway)) {
@@ -55,6 +39,31 @@ export async function modifyPreset(
     }
   } else {
     return "Leeway Invalid";
+  }
+  if (isInTimeFormat(data.breakLength)) {
+    const newBreakLength = parseTime(data.breakLength);
+    if (!presetService.editBreakLength(newBreakLength)) {
+      return "Break Length Invalid!";
+    }
+    const newLeeway = parseTime(data.leeway);
+    if (newBreakLength < newLeeway) {
+      return "Break Length must be greater than Leeway!";
+    }
+  } else {
+    return "Break Length Invalid";
+  }
+
+  if (isInTimeFormat(data.streakLength)) {
+    const newStreakLength = parseTime(data.streakLength);
+    if (!presetService.editStreakLength(newStreakLength)) {
+      return "Streak Length Invalid!";
+    }
+    const newBreakLength = parseTime(data.breakLength);
+    if (newStreakLength < newBreakLength) {
+      return "Streak Length must be greater than Break Length!";
+    }
+  } else {
+    return "Streak Length Invalid";
   }
 
   chrome.storage.local.set(
