@@ -1,6 +1,6 @@
 import PresetService from "./presetService";
-// import DataService from "./dataService";
-// import IdleService from "./idleService";
+import { CurrentStreakData, DayStreakData } from "./dataService";
+//import IdleService from "./idleService";
 export interface modifyData {
   name: string;
   streakLength: string;
@@ -11,6 +11,14 @@ export async function loadPreset(presetNumber: number): Promise<PresetService> {
   const data = await chrome.storage.local.get(["preset" + presetNumber]);
   const presetData = data["preset" + presetNumber];
   return new PresetService(presetData);
+}
+export async function loadCurrentData(): Promise<CurrentStreakData> {
+  const data = await chrome.storage.local.get(["currentSession"]);
+  return new CurrentStreakData(data["currentSession"]);
+}
+export async function loadTodayData(): Promise<DayStreakData> {
+  const data = await chrome.storage.local.get(["CurrentDaySession"]);
+  return new DayStreakData(data["CurrentDaySession"]);
 }
 export async function getCurrentPreset(): Promise<number> {
   const data = await chrome.storage.local.get(["defaultPreset"]);

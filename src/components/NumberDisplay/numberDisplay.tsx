@@ -5,14 +5,14 @@ interface MyComponentProps {
   streaksDone: number;
   minutesActive: number;
   breaksTaken: number;
-  timedle: number;
+  score: number;
 }
 const NumberDisplay: React.FC<MyComponentProps> = ({
   shadowDirection,
   streaksDone,
   minutesActive,
   breaksTaken,
-  timedle,
+  score,
 }) => {
   const boxShadowClass =
     shadowDirection === "right" ? styles.rightShadow : styles.leftShadow;
@@ -37,10 +37,10 @@ const NumberDisplay: React.FC<MyComponentProps> = ({
       <div className={styles.number_section}>
         <div className={styles.number_card}>
           <div className={styles.number_container}>
-            <div className={styles.minute_number}>{timedle}</div>
+            <div className={styles.minute_number}>{score}</div>
           </div>
 
-          <div className={styles.minute_text}>Time Distracted</div>
+          <div className={styles.minute_text}>Productvity Score</div>
         </div>
         <div className={styles.number_card}>
           <div className={styles.number_container}>

@@ -1,13 +1,14 @@
-const filename = [
+const presetFileName = [
   "preset1.json",
   "preset2.json",
   "preset3.json",
   "preset4.json",
 ];
-const SetupPreset = (reason: string) => {
+
+export const SetupPreset = (reason: string) => {
   if (reason === "install") {
-    for (let i = 0; i < filename.length; i++) {
-      fetch(chrome.runtime.getURL(filename[i]))
+    for (let i = 0; i < presetFileName.length; i++) {
+      fetch(chrome.runtime.getURL(presetFileName[i]))
         .then((response) => {
           response.json().then((data) => {
             if (data.isDefault) {
@@ -43,4 +44,41 @@ const SetupPreset = (reason: string) => {
     }
   }
 };
-export default SetupPreset;
+export const SetupData = (reason: string) => {
+  if (reason === "install") {
+    fetch(chrome.runtime.getURL("current.json"))
+      .then((response) => {
+        response.json().then((data) => {
+          chrome.storage.local.set({ ["currentSession"]: data }, () => {
+            if (chrome.runtime.lastError) {
+              console.error("Error setting data:", chrome.runtime.lastError);
+            } else {
+              console.log(
+                "Current Session successfully saved in chrome.storage.sync"
+              );
+            }
+          });
+        });
+      })
+      .catch((error) => {
+        console.error("Failed to load JSON file:", error);
+      });
+    fetch(chrome.runtime.getURL("today.json"))
+      .then((response) => {
+        response.json().then((data) => {
+          chrome.storage.local.set({ ["CurrentDaySession"]: data }, () => {
+            if (chrome.runtime.lastError) {
+              console.error("Error setting data:", chrome.runtime.lastError);
+            } else {
+              console.log(
+                "Current Day Session successfully saved in chrome.storage.sync"
+              );
+            }
+          });
+        });
+      })
+      .catch((error) => {
+        console.error("Failed to load JSON file:", error);
+      });
+  }
+};

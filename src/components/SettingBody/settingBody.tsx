@@ -131,19 +131,19 @@ const SettingBody: React.FC<SettingBodyProps> = () => {
                   setHelperText2("Only numbers are allowed.");
                 }
                 if (value.length != 5 && value.length != 7) {
-                  setHelperText2("must be in format mm:ss or h:mm:ss");
+                  setHelperText2("Must be in format mm:ss or h:mm:ss");
                 }
                 if (
                   (value.length === 5 && parseInt(value[0], 10) > 5) ||
                   parseInt(value[3], 10) > 5
                 ) {
-                  setHelperText2("must be in format mm:ss");
+                  setHelperText2("Must be in format mm:ss");
                 }
                 if (
                   (value.length === 7 && parseInt(value[2], 10) > 5) ||
                   parseInt(value[5], 10) > 5
                 ) {
-                  setHelperText2("must be in format h:mm:ss");
+                  setHelperText2("Must be in format h:mm:ss");
                 }
               }}
               onFocus={() => setIsFocused1(true)}
@@ -170,12 +170,12 @@ const SettingBody: React.FC<SettingBodyProps> = () => {
                   setHelperText("Only numbers are allowed.");
                 }
                 if (value.length != 5) {
-                  setHelperText("must be in format mm:ss");
+                  setHelperText("Must be in format mm:ss");
                 } else if (
                   parseInt(value[0], 10) > 5 ||
                   parseInt(value[3], 10) > 5
                 ) {
-                  setHelperText("must be in format mm:ss");
+                  setHelperText("Must be in format mm:ss");
                 }
               }}
               onFocus={() => setIsFocused2(true)}
@@ -202,12 +202,12 @@ const SettingBody: React.FC<SettingBodyProps> = () => {
                   setHelperText3("Only numbers are allowed.");
                 }
                 if (value.length != 5) {
-                  setHelperText3("must be in format mm:ss");
+                  setHelperText3("Must be in format mm:ss");
                 } else if (
                   parseInt(value[0], 10) > 5 ||
                   parseInt(value[3], 10) > 5
                 ) {
-                  setHelperText3("must be in format mm:ss");
+                  setHelperText3("Must be in format mm:ss");
                 }
               }}
               onFocus={() => setIsFocused3(true)}
