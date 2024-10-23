@@ -121,6 +121,13 @@ export async function startPreset() {
   const todayData = await loadTodayData();
   currentData.startSession(presetService);
   todayData.startSession();
+  chrome.storage.local.set({ ["status"]: "active" }, () => {
+    if (chrome.runtime.lastError) {
+      console.error("Error setting data:", chrome.runtime.lastError);
+    } else {
+      console.log("Status successfully modified");
+    }
+  });
   // chrome.storage.local.set(
   //     { currentSession: currentData.toJSON() },
   //     () => {

@@ -1,11 +1,12 @@
 {
-  "streaksDone": 0,
   "timeActive": 0,
+  "streaksDone": 0,
   "breaksTaken": 0,
   "timesIdle": 0,
   "timeIdleMax": 0,
   "streakProgress": 0,
-  "streakProgressMax": 0,
+  "currentStreakLength": 0,
+  "currentStreakEnd": 0,
   "breakProgress": 0,
   "breakProgressMax": 0
 }

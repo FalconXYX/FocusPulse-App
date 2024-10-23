@@ -6,7 +6,6 @@ import {
   getCurrentPreset,
   loadCurrentData,
   loadTodayData,
-  startPreset,
 } from "../../services/main.ts";
 import styles from "./mainBody.module.css";
 import PresetButtons from "../PresetButtons/presetButtons.tsx";
@@ -21,7 +20,7 @@ const MainBody: React.FC<MainBodyProps> = () => {
   const [streaksCurrentDone, setStreaksCurrentDone] = useState<number>(0);
   const [timeCurrentActive, setTimeCurrentActive] = useState<number>(0);
   const [streakProgress, setStreakProgress] = useState<number>(0);
-  const [streakProgressMax, setStreakProgressMax] = useState<number>(10);
+  const [currentStreakLength, setcurrentStreakLength] = useState<number>(10);
   // Initialize the state variables for the current day
   const [streaksTodayDone, setStreaksTodayDone] = useState<number>(0);
   const [timeTodayActive, setTimeTodayActive] = useState<number>(0);
@@ -40,13 +39,13 @@ const MainBody: React.FC<MainBodyProps> = () => {
         setStreaksCurrentDone(currentDataService.getStreaksDone());
         setTimeCurrentActive(currentDataService.getTimeActive());
         setStreakProgress(currentDataService.getStreakProgress());
-        setStreakProgressMax(currentDataService.getStreakProgressMax());
+        setcurrentStreakLength(currentDataService.getCurrentStreakLength());
       }
       if (currentDayDataService) {
         setStreaksTodayDone(currentDayDataService.getStreaksDone());
         setTimeTodayActive(currentDayDataService.getTimeActive());
         setBreaksTodayTaken(currentDayDataService.getBreaksTaken());
-        setStreaksStarted(currentDayDataService.getStreakStarted());
+        setStreaksStarted(currentDayDataService.getStreaksStarted());
       }
     }
 
@@ -60,7 +59,7 @@ const MainBody: React.FC<MainBodyProps> = () => {
   return (
     <section className={styles.container}>
       <div className={styles.top}>
-        <TextCard start={startPreset()} />
+        <TextCard />
         <PresetButtons
           presetState={numberState}
           changeCurrentPreset={async (preset: number) => {
@@ -75,7 +74,9 @@ const MainBody: React.FC<MainBodyProps> = () => {
           statusBar="Streak"
           streaksDone={streaksCurrentDone}
           minutesActive={Math.floor(timeCurrentActive / 60000)}
-          barProgress1={Math.floor((streakProgress / streakProgressMax) * 100)}
+          barProgress1={Math.floor(
+            (streakProgress / currentStreakLength) * 100
+          )}
           status="Inactive"
         />
         <NumberDisplay

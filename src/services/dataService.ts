@@ -105,7 +105,7 @@ export class DayStreakData {
   getTimesIdle() {
     return this.timesIdle;
   }
-  getstreaksStarted() {
+  getStreaksStarted() {
     return this.streaksStarted;
   }
   startSession() {
