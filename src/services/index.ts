@@ -1,8 +1,9 @@
-import { SetupPreset, SetupData } from "./setup";
+import { SetupPreset, SetupData, setupStatus } from "./setup";
 chrome.runtime.onInstalled.addListener((details) => {
   console.log("Extension installed with reason:", details.reason);
   SetupPreset(details.reason);
   SetupData(details.reason);
+  setupStatus();
 });
 
 chrome.idle.setDetectionInterval(15); // Set idle time threshold to 15 seconds

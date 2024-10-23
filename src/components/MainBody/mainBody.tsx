@@ -6,6 +6,7 @@ import {
   getCurrentPreset,
   loadCurrentData,
   loadTodayData,
+  startPreset,
 } from "../../services/main.ts";
 import styles from "./mainBody.module.css";
 import PresetButtons from "../PresetButtons/presetButtons.tsx";
@@ -59,7 +60,7 @@ const MainBody: React.FC<MainBodyProps> = () => {
   return (
     <section className={styles.container}>
       <div className={styles.top}>
-        <TextCard />
+        <TextCard start={startPreset()} />
         <PresetButtons
           presetState={numberState}
           changeCurrentPreset={async (preset: number) => {

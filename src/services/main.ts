@@ -113,3 +113,22 @@ function isInTimeFormat(timestamp: string): boolean {
   console.log(regexMMSS.test(timestamp), regexHMMSS.test(timestamp));
   return regexMMSS.test(timestamp) || regexHMMSS.test(timestamp);
 }
+//
+export async function startPreset() {
+  const currentPreset = await getCurrentPreset();
+  const presetService = await loadPreset(currentPreset);
+  const currentData = await loadCurrentData();
+  const todayData = await loadTodayData();
+  currentData.startSession(presetService);
+  todayData.startSession();
+  // chrome.storage.local.set(
+  //     { currentSession: currentData.toJSON() },
+  //     () => {
+  //     if (chrome.runtime.lastError) {
+  //         console.error("Error setting data:", chrome.runtime.lastError);
+  //     } else {
+  //         console.log("Session started");
+  //     }
+  //     }
+  // );
+}
