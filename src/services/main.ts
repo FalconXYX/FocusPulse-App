@@ -110,9 +110,31 @@ function parseTime(time: string): number {
 function isInTimeFormat(timestamp: string): boolean {
   const regexMMSS = /^\d{2}:\d{2}$/;
   const regexHMMSS = /^\d{1}:\d{2}:\d{2}$/;
-  console.log(regexMMSS.test(timestamp), regexHMMSS.test(timestamp));
   return regexMMSS.test(timestamp) || regexHMMSS.test(timestamp);
 }
+export async function getStatus() {
+  const data = await chrome.storage.local.get(["status"]);
+  return data["status"];
+}
+export async function saveCurrentData(currentData: CurrentStreakData) {
+  chrome.storage.local.set({ currentSession: currentData.toJSON() }, () => {
+    if (chrome.runtime.lastError) {
+      console.error("Error setting data:", chrome.runtime.lastError);
+    } else {
+      console.log("Current Session successfully saved");
+    }
+  });
+}
+export async function saveTodayData(todayData: DayStreakData) {
+  chrome.storage.local.set({ CurrentDaySession: todayData.toJSON() }, () => {
+    if (chrome.runtime.lastError) {
+      console.error("Error setting data:", chrome.runtime.lastError);
+    } else {
+      console.log("Today Session successfully saved");
+    }
+  });
+}
+
 //
 export async function startPreset() {
   const currentPreset = await getCurrentPreset();
@@ -128,14 +150,39 @@ export async function startPreset() {
       console.log("Status successfully modified");
     }
   });
-  // chrome.storage.local.set(
-  //     { currentSession: currentData.toJSON() },
-  //     () => {
-  //     if (chrome.runtime.lastError) {
-  //         console.error("Error setting data:", chrome.runtime.lastError);
-  //     } else {
-  //         console.log("Session started");
-  //     }
-  //     }
-  // );
+  saveCurrentData(currentData);
+  saveTodayData(todayData);
+}
+export async function startBreak() {
+  const currentPreset = await getCurrentPreset();
+  const presetService = await loadPreset(currentPreset);
+  const currentData = await loadCurrentData();
+  const todayData = await loadTodayData();
+  currentData.startBreak(presetService);
+  todayData.startBreak();
+  chrome.storage.local.set({ ["status"]: "break" }, () => {
+    if (chrome.runtime.lastError) {
+      console.error("Error setting data:", chrome.runtime.lastError);
+    } else {
+      console.log("Status successfully modified");
+    }
+  });
+  saveCurrentData(currentData);
+  saveTodayData(todayData);
+}
+export async function incrementSeconds() {
+  const currentData = await loadCurrentData();
+  const todayData = await loadTodayData();
+  //const preset = await loadPreset(await getCurrentPreset());
+  setInterval(() => {
+    if (currentData.incrementStreakTime()) {
+      startBreak();
+    }
+    if (todayData.incrementStreakTime()) {
+      todayData.endDay();
+    }
+    console.log("Incremented time");
+  }, 1000);
+  saveTodayData(todayData);
+  saveCurrentData(currentData);
 }

@@ -6,6 +6,7 @@ import {
   getCurrentPreset,
   loadCurrentData,
   loadTodayData,
+  getStatus,
 } from "../../services/main.ts";
 import styles from "./mainBody.module.css";
 import PresetButtons from "../PresetButtons/presetButtons.tsx";
@@ -26,6 +27,7 @@ const MainBody: React.FC<MainBodyProps> = () => {
   const [timeTodayActive, setTimeTodayActive] = useState<number>(0);
   const [breaksTodayTaken, setBreaksTodayTaken] = useState<number>(0);
   const [streaksStarted, setStreaksStarted] = useState<number>(0);
+  const [status, setStatus] = useState<string>("Inactive");
 
   useEffect(() => {
     async function fetchPreset() {
@@ -35,6 +37,8 @@ const MainBody: React.FC<MainBodyProps> = () => {
     async function fetchData() {
       const currentDataService = await loadCurrentData();
       const currentDayDataService = await loadTodayData();
+      setStatus(await getStatus());
+
       if (currentDataService) {
         setStreaksCurrentDone(currentDataService.getStreaksDone());
         setTimeCurrentActive(currentDataService.getTimeActive());
@@ -56,6 +60,15 @@ const MainBody: React.FC<MainBodyProps> = () => {
     if (streaksStarted === 0) return 0;
     return Math.floor((streaksTodayDone / streaksStarted) * 100);
   }
+  function getBarProgress(): number {
+    if (status === "Active") {
+      return (Date.now() - streakProgress) / currentStreakLength;
+    }
+    if (status === "Break") {
+      return (Date.now() - streakProgress) / currentStreakLength;
+    }
+    return 0;
+  }
   return (
     <section className={styles.container}>
       <div className={styles.top}>
@@ -74,10 +87,8 @@ const MainBody: React.FC<MainBodyProps> = () => {
           statusBar="Streak"
           streaksDone={streaksCurrentDone}
           minutesActive={Math.floor(timeCurrentActive / 60000)}
-          barProgress1={Math.floor(
-            (streakProgress / currentStreakLength) * 100
-          )}
-          status="Inactive"
+          barProgress1={getBarProgress()}
+          status={status}
         />
         <NumberDisplay
           shadowDirection="right"
