@@ -120,8 +120,6 @@ export async function saveCurrentData(currentData: CurrentStreakData) {
   chrome.storage.local.set({ currentSession: currentData.toJSON() }, () => {
     if (chrome.runtime.lastError) {
       console.error("Error setting data:", chrome.runtime.lastError);
-    } else {
-      console.log("Current Session successfully saved");
     }
   });
 }
@@ -129,8 +127,6 @@ export async function saveTodayData(todayData: DayStreakData) {
   chrome.storage.local.set({ CurrentDaySession: todayData.toJSON() }, () => {
     if (chrome.runtime.lastError) {
       console.error("Error setting data:", chrome.runtime.lastError);
-    } else {
-      console.log("Today Session successfully saved");
     }
   });
 }
@@ -160,13 +156,7 @@ export async function startBreak() {
   const todayData = await loadTodayData();
   currentData.startBreak(presetService);
   todayData.startBreak();
-  chrome.storage.local.set({ ["status"]: "break" }, () => {
-    if (chrome.runtime.lastError) {
-      console.error("Error setting data:", chrome.runtime.lastError);
-    } else {
-      console.log("Status successfully modified");
-    }
-  });
+
   saveCurrentData(currentData);
   saveTodayData(todayData);
 }
@@ -174,15 +164,24 @@ export async function incrementSeconds() {
   const currentData = await loadCurrentData();
   const todayData = await loadTodayData();
   //const preset = await loadPreset(await getCurrentPreset());
-  setInterval(() => {
+
+  const intervalID = setInterval(() => {
     if (currentData.incrementStreakTime()) {
-      startBreak();
+      todayData.finishStreak();
+      chrome.storage.local.set({ ["status"]: "break" }, () => {
+        if (chrome.runtime.lastError) {
+          console.error("Error setting data:", chrome.runtime.lastError);
+        } else {
+          console.log("Status successfully modified");
+        }
+      });
+      clearInterval(intervalID);
     }
     if (todayData.incrementStreakTime()) {
       todayData.endDay();
     }
     console.log("Incremented time");
+    saveTodayData(todayData);
+    saveCurrentData(currentData);
   }, 1000);
-  saveTodayData(todayData);
-  saveCurrentData(currentData);
 }

@@ -5,6 +5,7 @@ import {
   changePreset,
   formatTime,
   modifyPreset,
+  getStatus,
 } from "../../services/main";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -24,6 +25,7 @@ const SettingBody: React.FC<SettingBodyProps> = () => {
   const [isFocused1, setIsFocused1] = useState<boolean>(false);
   const [isFocused2, setIsFocused2] = useState<boolean>(false);
   const [isFocused3, setIsFocused3] = useState<boolean>(false);
+  const [stat, doThing] = useState<string>("inactive");
 
   async function getPresetData(mode: string) {
     const currentPreset = await getCurrentPreset();
@@ -44,6 +46,8 @@ const SettingBody: React.FC<SettingBodyProps> = () => {
     async function fetchPreset() {
       const currentPreset = await getCurrentPreset();
       setNumberState(currentPreset);
+      const s = await getStatus();
+      doThing(s);
 
       const length = await getPresetData("streakLength");
       if (length !== undefined) setStreakLength(length.toString());
@@ -76,6 +80,11 @@ const SettingBody: React.FC<SettingBodyProps> = () => {
   }
 
   async function editPreset(): Promise<void> {
+    const s = await getStatus();
+    if (s != "inactive") {
+      alert("Cannot edit preset while active.");
+      return;
+    }
     const data = {
       name: presetName,
       streakLength: streakLength,
@@ -106,6 +115,10 @@ const SettingBody: React.FC<SettingBodyProps> = () => {
         <PresetButtons
           presetState={numberState}
           changeCurrentPreset={async (preset: number) => {
+            if (stat != "inactive") {
+              alert("Cannot change preset while active.");
+              return;
+            }
             await changePreset(preset);
             setNumberState(preset);
           }}

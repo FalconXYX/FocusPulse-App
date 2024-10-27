@@ -8,5 +8,6 @@
   "currentStreakLength": 0,
   "currentStreakEnd": 1,
   "breakProgress": 0,
-  "breakProgressMax": 0
+  "breakProgressMax": 0,
+  "streakStart": 0
 }

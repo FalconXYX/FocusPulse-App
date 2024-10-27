@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./infoDisplay.module.css";
 import ProgressBar from "../ProgressBar/progressBar.tsx";
 interface MyComponentProps {
@@ -7,7 +7,8 @@ interface MyComponentProps {
   streaksDone: number;
   minutesActive: number;
   barProgress1: number;
-  status: string;
+  stats: string;
+  timeStamp: string;
 }
 const InfoDisplay: React.FC<MyComponentProps> = ({
   shadowDirection,
@@ -15,18 +16,15 @@ const InfoDisplay: React.FC<MyComponentProps> = ({
   streaksDone,
   minutesActive,
   barProgress1,
-  status,
+  stats,
+  timeStamp,
 }) => {
   const boxShadowClass =
     shadowDirection === "right" ? styles.rightShadow : styles.leftShadow;
-  const [streakStatus, setStreakStatus] = useState<string>(status);
-  if (status === "Streak") {
-    setStreakStatus("Streak");
-  }
-  if (status === "Break") {
-    setStreakStatus("Break");
-  }
-
+  const [streakStatus, setStreakStatus] = useState<string>(stats);
+  useEffect(() => {
+    setStreakStatus(stats);
+  }, [stats, streakStatus]);
   return (
     <section className={`${styles.card} ${boxShadowClass}`}>
       <div className={styles.header}>Current Session</div>
@@ -37,7 +35,7 @@ const InfoDisplay: React.FC<MyComponentProps> = ({
         <ProgressBar
           progress={barProgress1}
           name={`${statusBar} Progress`}
-          time="00:00:12"
+          time={timeStamp}
         />
       </div>
       <div className={styles.number_section}>

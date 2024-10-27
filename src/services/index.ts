@@ -1,4 +1,4 @@
-import { incrementSeconds } from "./main";
+import { incrementSeconds, startBreak } from "./main";
 import { SetupPreset, SetupData, setupStatus } from "./setup";
 chrome.runtime.onInstalled.addListener((details) => {
   console.log("Extension installed with reason:", details.reason);
@@ -26,6 +26,12 @@ chrome.storage.onChanged.addListener((changes, area) => {
     const newStatus = changes.status.newValue;
     if (newStatus === "active") {
       incrementSeconds();
+    }
+    if (newStatus === "break") {
+      startBreak();
+    }
+    if (newStatus === "inactive") {
+      console.log("Session ended");
     }
   }
 });

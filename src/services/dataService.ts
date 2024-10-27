@@ -10,6 +10,7 @@ interface CurrentData {
   currentStreakEnd: number;
   breakProgress: number;
   breakProgressMax: number;
+  streakStart: number;
 }
 interface TodayData {
   timeActive: number;
@@ -30,6 +31,7 @@ export class CurrentStreakData {
   breakProgress: number;
   breakProgressMax: number;
   currentStreakEnd: Date;
+  streakStart: number;
 
   constructor(data: CurrentData) {
     this.timeActive = data.timeActive;
@@ -42,6 +44,7 @@ export class CurrentStreakData {
     this.breakProgress = data.breakProgress;
     this.breakProgressMax = data.breakProgressMax;
     this.currentStreakEnd = new Date(data.currentStreakEnd);
+    this.streakStart = data.streakStart;
   }
   getTimeActive() {
     return this.timeActive;
@@ -73,12 +76,17 @@ export class CurrentStreakData {
   getCurrentStreakEnd() {
     return this.currentStreakEnd;
   }
+  getStreakStart() {
+    return this.streakStart;
+  }
   startSession(preset: PresetService) {
+    this.streakStart = Date.now();
     this.currentStreakLength = preset.getStreakLength();
     this.streakProgress = Date.now();
     this.breakProgressMax = preset.getBreakLength();
     this.breakProgress = 0;
     this.currentStreakEnd = new Date(Date.now() + this.currentStreakLength);
+    console.log(this.currentStreakEnd);
   }
   startBreak(preset: PresetService) {
     this.breakProgress = Date.now();
@@ -102,7 +110,9 @@ export class CurrentStreakData {
   incrementStreakTime(): boolean {
     this.timeActive += 1000;
     this.streakProgress = Date.now() + 1000;
-    if (this.currentStreakEnd) {
+    console.log("Streak", this.currentStreakEnd, new Date());
+    if (this.currentStreakEnd < new Date()) {
+      console.log("Streak Complete", this.currentStreakEnd, new Date());
       this.streaksDone += 1;
       return true;
     } else {
@@ -128,7 +138,8 @@ export class CurrentStreakData {
       currentStreakLength: this.currentStreakLength,
       breakProgress: this.breakProgress,
       breakProgressMax: this.breakProgressMax,
-      currentStreakEnd: this.currentStreakEnd.getDate(),
+      currentStreakEnd: this.currentStreakEnd.getTime(),
+      streakStart: this.streakStart,
     };
   }
 }
@@ -167,6 +178,9 @@ export class DayStreakData {
   }
   startSession() {
     this.streaksStarted += 1;
+  }
+  finishStreak() {
+    this.streaksDone += 1;
   }
   startBreak() {
     this.breaksTaken += 1;
