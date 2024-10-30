@@ -18,7 +18,11 @@ export async function loadCurrentData(): Promise<CurrentStreakData> {
 }
 export async function loadTodayData(): Promise<DayStreakData> {
   const data = await chrome.storage.local.get(["CurrentDaySession"]);
-  return new DayStreakData(data["CurrentDaySession"]);
+  const day = new DayStreakData(data["CurrentDaySession"]);
+  if (day.checkDay()) {
+    day.endDay();
+  }
+  return day;
 }
 export async function getCurrentPreset(): Promise<number> {
   const data = await chrome.storage.local.get(["defaultPreset"]);
@@ -132,22 +136,39 @@ export async function saveTodayData(todayData: DayStreakData) {
 }
 
 //
-export async function startPreset() {
-  const currentPreset = await getCurrentPreset();
-  const presetService = await loadPreset(currentPreset);
-  const currentData = await loadCurrentData();
-  const todayData = await loadTodayData();
-  currentData.startSession(presetService);
-  todayData.startSession();
-  chrome.storage.local.set({ ["status"]: "active" }, () => {
-    if (chrome.runtime.lastError) {
-      console.error("Error setting data:", chrome.runtime.lastError);
-    } else {
-      console.log("Status successfully modified");
-    }
-  });
-  saveCurrentData(currentData);
-  saveTodayData(todayData);
+export async function startPreset(mode: string) {
+  console.log(mode);
+  if (mode === "Start") {
+    const currentPreset = await getCurrentPreset();
+    const presetService = await loadPreset(currentPreset);
+    const currentData = await loadCurrentData();
+    const todayData = await loadTodayData();
+    currentData.startSession(presetService);
+    todayData.startSession();
+    chrome.storage.local.set({ ["status"]: "active" }, () => {
+      if (chrome.runtime.lastError) {
+        console.error("Error setting data:", chrome.runtime.lastError);
+      } else {
+        console.log("Status successfully modified");
+      }
+    });
+    saveCurrentData(currentData);
+    saveTodayData(todayData);
+  }
+  if (mode === "Pause") {
+    const currentData = await loadCurrentData();
+    const todayData = await loadTodayData();
+    currentData.endSession();
+    chrome.storage.local.set({ ["status"]: "inactive" }, () => {
+      if (chrome.runtime.lastError) {
+        console.error("Error setting data:", chrome.runtime.lastError);
+      } else {
+        console.log("Status successfully modified");
+      }
+    });
+    saveCurrentData(currentData);
+    saveTodayData(todayData);
+  }
 }
 export async function startBreak() {
   const currentPreset = await getCurrentPreset();
@@ -164,7 +185,7 @@ export async function incrementSeconds() {
   const currentData = await loadCurrentData();
   const todayData = await loadTodayData();
   //const preset = await loadPreset(await getCurrentPreset());
-
+  console.log(todayData.toJSON());
   const intervalID = setInterval(() => {
     if (currentData.incrementStreakTime()) {
       todayData.finishStreak();
@@ -180,8 +201,51 @@ export async function incrementSeconds() {
     if (todayData.incrementStreakTime()) {
       todayData.endDay();
     }
+    chrome.storage.onChanged.addListener(async (changes, area) => {
+      if (area === "local" && changes.status) {
+        const newStatus = changes.status.newValue;
+
+        if (newStatus === "inactive") {
+          clearInterval(intervalID);
+        }
+      }
+    });
     console.log("Incremented time");
     saveTodayData(todayData);
     saveCurrentData(currentData);
   }, 1000);
+}
+export async function createPopup(type: string) {
+  if (type === "break") {
+    chrome.windows.create({
+      url: "break.html",
+      type: "popup",
+      width: 300,
+      height: 300,
+    });
+  }
+  if (type === "streak") {
+    chrome.windows.create({
+      url: "streak.html",
+      type: "popup",
+      width: 300,
+      height: 300,
+    });
+  }
+  if (type === "end") {
+    chrome.windows.create({
+      url: "end.html",
+      type: "popup",
+      width: 300,
+      height: 300,
+    });
+  }
+}
+export async function endSession() {
+  console.log("Session ended");
+  const currentData = await loadCurrentData();
+  const todayData = await loadTodayData();
+  currentData.endSession();
+  saveTodayData(todayData);
+  saveCurrentData(currentData);
 }

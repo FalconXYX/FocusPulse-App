@@ -95,6 +95,8 @@ export class CurrentStreakData {
   }
   endStreak() {
     this.streaksDone += 1;
+    this.streakProgress = 0;
+    this.currentStreakLength = 0;
   }
   endSession() {
     this.streaksDone = 0;
@@ -187,12 +189,14 @@ export class DayStreakData {
   }
   incrementStreakTime(): boolean {
     this.timeActive += 1000;
+
     //check if the day is not the same as the one stored in this.dateStarted
-    if (this.dateStarted.getDate() !== new Date().getDate()) {
-      this.endDay();
-      return false;
+    if (this.checkDay()) {
+      console.log("Day has changed");
+
+      return true;
     }
-    return true;
+    return false;
   }
   endDay() {
     this.streaksDone = 0;
@@ -201,6 +205,12 @@ export class DayStreakData {
     this.timeActive = 0;
     this.streaksStarted = 0;
     this.dateStarted = new Date();
+  }
+  checkDay(): boolean {
+    if (this.dateStarted.getDate() !== new Date().getDate()) {
+      return true;
+    }
+    return false;
   }
   toJSON(): TodayData {
     return {

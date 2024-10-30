@@ -14,16 +14,14 @@ import PresetButtons from "../PresetButtons/presetButtons";
 import InfoDisplay from "../InfoDisplay/infoDisplay";
 import NumberDisplay from "../NumberDisplay/numberDisplay";
 
-interface MainBodyProps {}
-
-const MainBody: React.FC<MainBodyProps> = () => {
-  // State definitions
+const MainBody: React.FC = () => {
   const [state, setState] = useState({
     numberState: 1,
     streaksCurrentDone: 0,
     timeCurrentActive: 0,
-    streakProgress: 0,
+    streakProgress: 100,
     currentStreakLength: 10,
+    streakEnd: 10,
     streaksTodayDone: 0,
     timeTodayActive: 0,
     breaksTodayTaken: 0,
@@ -35,7 +33,12 @@ const MainBody: React.FC<MainBodyProps> = () => {
     presetName: "",
   });
 
-  // Memoized update function to prevent unnecessary rerenders
+  // Add state to store the last active preset values
+  const [lastActivePreset, setLastActivePreset] = useState({
+    streakLength: 0,
+    breakLength: 0,
+  });
+
   const updateState = useCallback(async () => {
     try {
       const currentPreset = await getCurrentPreset();
@@ -43,6 +46,14 @@ const MainBody: React.FC<MainBodyProps> = () => {
       const currentDataService = await loadCurrentData();
       const currentDayDataService = await loadTodayData();
       const status = await getStatus();
+
+      // If transitioning from active to inactive, store the current values
+      if (state.stat === "active" && status === "inactive") {
+        setLastActivePreset({
+          streakLength: currentService.getStreakLength(),
+          breakLength: currentService.getBreakLength(),
+        });
+      }
 
       const newState = {
         numberState: currentPreset,
@@ -52,45 +63,48 @@ const MainBody: React.FC<MainBodyProps> = () => {
         streaksCurrentDone: currentDataService?.getStreaksDone() || 0,
         timeCurrentActive: currentDataService?.getTimeActive() || 0,
         streakProgress: currentDataService?.getStreakProgress() || 0,
-        currentStreakLength: currentDataService?.getCurrentStreakLength() || 10,
-        currentBreakLength: currentDataService?.getBreakProgressMax() || 0,
+        // Use the last active preset values when inactive
+        currentStreakLength:
+          status === "inactive"
+            ? lastActivePreset.streakLength || currentService.getStreakLength()
+            : currentService.getStreakLength(),
+        currentBreakLength:
+          status === "inactive"
+            ? lastActivePreset.breakLength || currentService.getBreakLength()
+            : currentService.getBreakLength(),
+        streaksTodayDone: currentDayDataService?.getStreaksDone() || 0,
+        timeTodayActive: currentDayDataService?.getTimeActive() || 0,
+        breaksTodayTaken: currentDayDataService?.getBreaksTaken() || 0,
+        streaksStarted: currentDayDataService?.getStreaksStarted() || 0,
+        streakEnd: currentDataService?.getCurrentStreakEnd().getTime() || 10,
         timeStamps: currentDataService
           ? getTimeStamp(
               currentDataService.getStreakStart(),
               currentDataService.getStreakProgress()
             )
           : "",
-        streaksTodayDone: currentDayDataService?.getStreaksDone() || 0,
-        timeTodayActive: currentDayDataService?.getTimeActive() || 0,
-        breaksTodayTaken: currentDayDataService?.getBreaksTaken() || 0,
-        streaksStarted: currentDayDataService?.getStreaksStarted() || 0,
       };
 
       setState(newState);
     } catch (error) {
       console.error("Error updating state:", error);
     }
-  }, []);
+  }, [state.stat, lastActivePreset]);
 
-  // Set up Chrome storage listener
+  // Rest of the component remains the same
   useEffect(() => {
     const storageListener = () => {
       updateState();
     };
 
-    // Add listener for both sync and local storage
     chrome.storage.onChanged.addListener(storageListener);
-
-    // Initial data load
     updateState();
 
-    // Cleanup listener on unmount
     return () => {
       chrome.storage.onChanged.removeListener(storageListener);
     };
   }, [updateState]);
 
-  // Auto-update timer for active states
   useEffect(() => {
     let intervalId: number | undefined = undefined;
 
@@ -103,14 +117,17 @@ const MainBody: React.FC<MainBodyProps> = () => {
         window.clearInterval(intervalId);
       }
     };
-  }, [state.stat, updateState, state.streakProgress]);
+  }, [state.stat, updateState]);
 
-  // Helper functions
   const getTimeStamp = (start: number, progress: number): string => {
     const time = progress - start;
+
     const hours = Math.floor(time / 3600000);
     const minutes = Math.floor((time % 3600000) / 60000);
     const seconds = Math.floor((time % 60000) / 1000);
+    if (hours < 0 || minutes < 0 || seconds < 0) {
+      return "00:00";
+    }
     const formattedHours = hours > 0 ? `${hours}:` : "";
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
     const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
@@ -124,12 +141,14 @@ const MainBody: React.FC<MainBodyProps> = () => {
 
   const getBarProgress = (): number => {
     if (state.stat === "active" || state.stat === " break") {
-      return state.streakProgress / state.currentStreakLength;
+      return (
+        ((state.streakEnd - state.streakProgress) / state.currentStreakLength) *
+        100
+      );
     }
     return 0;
   };
 
-  // Handle preset change
   const handlePresetChange = async (preset: number) => {
     if (state.stat !== "inactive") {
       alert("Cannot change preset while active.");

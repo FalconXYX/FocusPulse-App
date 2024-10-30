@@ -25,7 +25,11 @@ const TextCard: React.FC<TextCardProps> = ({
           has {leeway} leeway.
         </p>
         <div className={styles.button}>
-          <Button variant="contained" size="small" onClick={startPreset}>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => startPreset(statusStart)}
+          >
             {statusStart}
           </Button>
         </div>

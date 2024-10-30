@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styles from "./infoDisplay.module.css";
 import ProgressBar from "../ProgressBar/progressBar.tsx";
+
 interface MyComponentProps {
   shadowDirection: "right" | "left";
   statusBar: "Streak" | "Break";
@@ -10,6 +11,7 @@ interface MyComponentProps {
   stats: string;
   timeStamp: string;
 }
+
 const InfoDisplay: React.FC<MyComponentProps> = ({
   shadowDirection,
   statusBar,
@@ -21,19 +23,18 @@ const InfoDisplay: React.FC<MyComponentProps> = ({
 }) => {
   const boxShadowClass =
     shadowDirection === "right" ? styles.rightShadow : styles.leftShadow;
-  const [streakStatus, setStreakStatus] = useState<string>(stats);
-  useEffect(() => {
-    setStreakStatus(stats);
-  }, [stats, streakStatus]);
+
+  useEffect(() => {}, [barProgress1]);
+
   return (
     <section className={`${styles.card} ${boxShadowClass}`}>
       <div className={styles.header}>Current Session</div>
       <div className={styles.status}>
-        <div className={styles.status_text}>{streakStatus}</div>
+        <div className={styles.status_text}>{stats}</div>
       </div>
       <div className={styles.bars}>
         <ProgressBar
-          progress={barProgress1}
+          progress={100 - barProgress1} // pass the prop directly
           name={`${statusBar} Progress`}
           time={timeStamp}
         />
@@ -43,7 +44,6 @@ const InfoDisplay: React.FC<MyComponentProps> = ({
           <div className={styles.streak_number_container}>
             <div className={styles.streak_number}>{streaksDone}</div>
           </div>
-
           <div className={styles.streak_text}>Streaks Completed</div>
         </div>
         <div className={styles.number_card}>
