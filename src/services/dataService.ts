@@ -89,6 +89,7 @@ export class CurrentStreakData {
     console.log(this.currentStreakEnd);
   }
   startBreak(preset: PresetService) {
+    this.streakStart = Date.now();
     this.breakProgress = Date.now();
     this.breakProgressMax = preset.getBreakLength();
     this.currentStreakEnd = new Date(Date.now() + this.breakProgressMax);
@@ -97,6 +98,10 @@ export class CurrentStreakData {
     this.streaksDone += 1;
     this.streakProgress = 0;
     this.currentStreakLength = 0;
+  }
+  endBreak() {
+    this.breakProgress = 0;
+    this.breakProgressMax = 0;
   }
   endSession() {
     this.streaksDone = 0;
@@ -111,11 +116,18 @@ export class CurrentStreakData {
   }
   incrementStreakTime(): boolean {
     this.timeActive += 1000;
-    this.streakProgress = Date.now() + 1000;
-    console.log("Streak", this.currentStreakEnd, new Date());
+    this.streakProgress += 1000;
     if (this.currentStreakEnd < new Date()) {
       console.log("Streak Complete", this.currentStreakEnd, new Date());
-      this.streaksDone += 1;
+      return true;
+    } else {
+      return false;
+    }
+  }
+  incrementBreakTime(): boolean {
+    this.breakProgress = Date.now() + 1000;
+    if (this.currentStreakEnd < new Date()) {
+      console.log("Break Complete", this.currentStreakEnd, new Date());
       return true;
     } else {
       return false;
@@ -184,6 +196,7 @@ export class DayStreakData {
   finishStreak() {
     this.streaksDone += 1;
   }
+
   startBreak() {
     this.breaksTaken += 1;
   }

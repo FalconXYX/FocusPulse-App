@@ -159,6 +159,7 @@ export async function startPreset(mode: string) {
     const currentData = await loadCurrentData();
     const todayData = await loadTodayData();
     currentData.endSession();
+
     chrome.storage.local.set({ ["status"]: "inactive" }, () => {
       if (chrome.runtime.lastError) {
         console.error("Error setting data:", chrome.runtime.lastError);
@@ -180,6 +181,13 @@ export async function startBreak() {
 
   saveCurrentData(currentData);
   saveTodayData(todayData);
+  chrome.storage.local.set({ ["status"]: "break" }, () => {
+    if (chrome.runtime.lastError) {
+      console.error("Error setting data:", chrome.runtime.lastError);
+    } else {
+      console.log("Status successfully modified");
+    }
+  });
 }
 export async function incrementSeconds() {
   const currentData = await loadCurrentData();
@@ -189,13 +197,8 @@ export async function incrementSeconds() {
   const intervalID = setInterval(() => {
     if (currentData.incrementStreakTime()) {
       todayData.finishStreak();
-      chrome.storage.local.set({ ["status"]: "break" }, () => {
-        if (chrome.runtime.lastError) {
-          console.error("Error setting data:", chrome.runtime.lastError);
-        } else {
-          console.log("Status successfully modified");
-        }
-      });
+      currentData.endStreak();
+      startBreak();
       clearInterval(intervalID);
     }
     if (todayData.incrementStreakTime()) {
@@ -204,13 +207,37 @@ export async function incrementSeconds() {
     chrome.storage.onChanged.addListener(async (changes, area) => {
       if (area === "local" && changes.status) {
         const newStatus = changes.status.newValue;
-
         if (newStatus === "inactive") {
           clearInterval(intervalID);
         }
       }
     });
     console.log("Incremented time");
+    saveTodayData(todayData);
+    saveCurrentData(currentData);
+  }, 1000);
+}
+export async function incrementBreakTime() {
+  const currentData = await loadCurrentData();
+  const todayData = await loadTodayData();
+  console.log(todayData.toJSON());
+  const intervalID = setInterval(() => {
+    if (currentData.incrementBreakTime()) {
+      currentData.endBreak();
+      startPreset("Start");
+
+      clearInterval(intervalID);
+    }
+
+    chrome.storage.onChanged.addListener(async (changes, area) => {
+      if (area === "local" && changes.status) {
+        const newStatus = changes.status.newValue;
+        if (newStatus === "inactive") {
+          clearInterval(intervalID);
+        }
+      }
+    });
+    console.log("Incremented break time");
     saveTodayData(todayData);
     saveCurrentData(currentData);
   }, 1000);

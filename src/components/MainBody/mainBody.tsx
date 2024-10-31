@@ -20,6 +20,7 @@ const MainBody: React.FC = () => {
     streaksCurrentDone: 0,
     timeCurrentActive: 0,
     streakProgress: 100,
+    breakProgress: 100,
     currentStreakLength: 10,
     streakEnd: 10,
     streaksTodayDone: 0,
@@ -55,6 +56,21 @@ const MainBody: React.FC = () => {
         });
       }
 
+      // Prepare the variables for timestamps
+      let timeStamps;
+      if (status === "active") {
+        // Use the current streak data for "active" status
+        timeStamps = getTimeStamp(
+          currentDataService.getStreakStart(),
+          currentDataService.getStreakProgress()
+        );
+      } else if (status === "break") {
+        timeStamps = getTimeStamp(
+          currentDataService?.getStreakStart(),
+          currentDataService?.getBreakProgress()
+        );
+      }
+
       const newState = {
         numberState: currentPreset,
         leeway: currentService.getLeeway(),
@@ -63,6 +79,7 @@ const MainBody: React.FC = () => {
         streaksCurrentDone: currentDataService?.getStreaksDone() || 0,
         timeCurrentActive: currentDataService?.getTimeActive() || 0,
         streakProgress: currentDataService?.getStreakProgress() || 0,
+        breakProgress: currentDataService?.getBreakProgress() || 0,
         // Use the last active preset values when inactive
         currentStreakLength:
           status === "inactive"
@@ -77,12 +94,7 @@ const MainBody: React.FC = () => {
         breaksTodayTaken: currentDayDataService?.getBreaksTaken() || 0,
         streaksStarted: currentDayDataService?.getStreaksStarted() || 0,
         streakEnd: currentDataService?.getCurrentStreakEnd().getTime() || 10,
-        timeStamps: currentDataService
-          ? getTimeStamp(
-              currentDataService.getStreakStart(),
-              currentDataService.getStreakProgress()
-            )
-          : "",
+        timeStamps: timeStamps || "", // Set the calculated timestamps
       };
 
       setState(newState);
@@ -140,9 +152,15 @@ const MainBody: React.FC = () => {
   };
 
   const getBarProgress = (): number => {
-    if (state.stat === "active" || state.stat === " break") {
+    if (state.stat === "active") {
       return (
         ((state.streakEnd - state.streakProgress) / state.currentStreakLength) *
+        100
+      );
+    }
+    if (state.stat === "break") {
+      return (
+        ((state.streakEnd - state.breakProgress) / state.currentBreakLength) *
         100
       );
     }

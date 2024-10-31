@@ -1,10 +1,11 @@
 import {
   incrementSeconds,
-  startBreak,
   endSession,
   loadPreset,
   getCurrentPreset,
   createPopup,
+  getStatus,
+  incrementBreakTime,
 } from "./main";
 import { SetupPreset, SetupData, setupStatus } from "./setup";
 chrome.runtime.onInstalled.addListener((details) => {
@@ -20,8 +21,8 @@ chrome.runtime.onInstalled.addListener((details) => {
 // Set the idle detection threshold to 240 seconds (4 minutes)
 
 // Listen for idle state changes
-chrome.idle.onStateChanged.addListener((newState) => {
-  if (newState === "idle") {
+chrome.idle.onStateChanged.addListener(async (newState) => {
+  if (newState === "idle" && (await getStatus()) === "active") {
     chrome.storage.local.set({ ["status"]: "inactive" }, () => {
       createPopup("idle");
       endSession();
@@ -39,7 +40,7 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
     }
     if (newStatus === "break") {
       //createPopup("break");
-      startBreak();
+      incrementBreakTime();
     }
     if (newStatus === "inactive") {
       console.log("Session ended");
