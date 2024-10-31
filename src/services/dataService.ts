@@ -201,11 +201,9 @@ export class DayStreakData {
   }
   incrementStreakTime(): boolean {
     this.timeActive += 1000;
-
     //check if the day is not the same as the one stored in this.dateStarted
     if (this.checkDay()) {
       console.log("Day has changed");
-
       return true;
     }
     return false;

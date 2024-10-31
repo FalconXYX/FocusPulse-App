@@ -186,7 +186,7 @@ export async function incrementSeconds() {
   const currentData = await loadCurrentData();
   const todayData = await loadTodayData();
   //const preset = await loadPreset(await getCurrentPreset());
-  console.log(todayData.toJSON());
+
   const intervalID = setInterval(() => {
     if (currentData.incrementStreakTime()) {
       todayData.finishStreak();
@@ -194,6 +194,7 @@ export async function incrementSeconds() {
       startBreak();
       clearInterval(intervalID);
     }
+
     if (todayData.incrementStreakTime()) {
       todayData.endDay();
     }
@@ -205,6 +206,7 @@ export async function incrementSeconds() {
         }
       }
     });
+    console.log(todayData.toJSON());
     saveTodayData(todayData);
     saveCurrentData(currentData);
   }, 1000);
