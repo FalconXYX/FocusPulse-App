@@ -86,7 +86,6 @@ export class CurrentStreakData {
     this.breakProgressMax = preset.getBreakLength();
     this.breakProgress = 0;
     this.currentStreakEnd = new Date(Date.now() + this.currentStreakLength);
-    console.log(this.currentStreakEnd);
   }
   startBreak(preset: PresetService) {
     this.streakStart = Date.now();

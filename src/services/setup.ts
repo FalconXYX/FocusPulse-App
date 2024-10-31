@@ -86,8 +86,6 @@ export const setupStatus = () => {
   chrome.storage.local.set({ ["status"]: "inactive" }, () => {
     if (chrome.runtime.lastError) {
       console.error("Error setting data:", chrome.runtime.lastError);
-    } else {
-      console.log("Status successfully saved in chrome.storage.sync");
     }
   });
 };

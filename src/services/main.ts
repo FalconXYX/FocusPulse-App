@@ -34,8 +34,6 @@ export async function changePreset(preset: number): Promise<void> {
   chrome.storage.local.set({ defaultPreset: preset }, () => {
     if (chrome.runtime.lastError) {
       console.error("Error setting data:", chrome.runtime.lastError);
-    } else {
-      console.log("Preset changed to " + preset);
     }
   });
 }
@@ -137,7 +135,6 @@ export async function saveTodayData(todayData: DayStreakData) {
 
 //
 export async function startPreset(mode: string) {
-  console.log(mode);
   if (mode === "Start") {
     const currentPreset = await getCurrentPreset();
     const presetService = await loadPreset(currentPreset);
@@ -148,8 +145,6 @@ export async function startPreset(mode: string) {
     chrome.storage.local.set({ ["status"]: "active" }, () => {
       if (chrome.runtime.lastError) {
         console.error("Error setting data:", chrome.runtime.lastError);
-      } else {
-        console.log("Status successfully modified");
       }
     });
     saveCurrentData(currentData);
@@ -163,8 +158,6 @@ export async function startPreset(mode: string) {
     chrome.storage.local.set({ ["status"]: "inactive" }, () => {
       if (chrome.runtime.lastError) {
         console.error("Error setting data:", chrome.runtime.lastError);
-      } else {
-        console.log("Status successfully modified");
       }
     });
     saveCurrentData(currentData);
@@ -212,7 +205,6 @@ export async function incrementSeconds() {
         }
       }
     });
-    console.log("Incremented time");
     saveTodayData(todayData);
     saveCurrentData(currentData);
   }, 1000);
@@ -237,7 +229,6 @@ export async function incrementBreakTime() {
         }
       }
     });
-    console.log("Incremented break time");
     saveTodayData(todayData);
     saveCurrentData(currentData);
   }, 1000);
