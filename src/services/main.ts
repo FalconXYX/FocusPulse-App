@@ -240,24 +240,18 @@ export async function createPopup(type: string) {
     chrome.windows.create({
       url: "break.html",
       type: "popup",
-      width: 300,
-      height: 300,
     });
   }
   if (type === "streak") {
     chrome.windows.create({
       url: "streak.html",
       type: "popup",
-      width: 300,
-      height: 300,
     });
   }
   if (type === "end") {
     chrome.windows.create({
       url: "end.html",
       type: "popup",
-      width: 300,
-      height: 300,
     });
   }
 }
