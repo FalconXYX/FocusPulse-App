@@ -19,9 +19,7 @@ export async function loadCurrentData(): Promise<CurrentStreakData> {
 export async function loadTodayData(): Promise<DayStreakData> {
   const data = await chrome.storage.local.get(["CurrentDaySession"]);
   const day = new DayStreakData(data["CurrentDaySession"]);
-  if (day.checkDay()) {
-    day.endDay();
-  }
+
   return day;
 }
 export async function getCurrentPreset(): Promise<number> {
@@ -142,13 +140,13 @@ export async function startPreset(mode: string) {
     const todayData = await loadTodayData();
     currentData.startSession(presetService);
     todayData.startSession();
+    await saveCurrentData(currentData);
+    await saveTodayData(todayData);
     chrome.storage.local.set({ ["status"]: "active" }, () => {
       if (chrome.runtime.lastError) {
         console.error("Error setting data:", chrome.runtime.lastError);
       }
     });
-    saveCurrentData(currentData);
-    saveTodayData(todayData);
   }
   if (mode === "Pause") {
     const currentData = await loadCurrentData();
@@ -160,8 +158,8 @@ export async function startPreset(mode: string) {
         console.error("Error setting data:", chrome.runtime.lastError);
       }
     });
-    saveCurrentData(currentData);
-    saveTodayData(todayData);
+    await saveCurrentData(currentData);
+    await saveTodayData(todayData);
   }
 }
 export async function startBreak() {
@@ -172,8 +170,8 @@ export async function startBreak() {
   currentData.startBreak(presetService);
   todayData.startBreak();
 
-  saveCurrentData(currentData);
-  saveTodayData(todayData);
+  await saveCurrentData(currentData);
+  await saveTodayData(todayData);
   chrome.storage.local.set({ ["status"]: "break" }, () => {
     if (chrome.runtime.lastError) {
       console.error("Error setting data:", chrome.runtime.lastError);
@@ -184,19 +182,25 @@ export async function startBreak() {
 }
 export async function incrementSeconds() {
   const currentData = await loadCurrentData();
-  const todayData = await loadTodayData();
-  //const preset = await loadPreset(await getCurrentPreset());
+  let todayData = await loadTodayData();
+  if (todayData.incrementStreakTime()) {
+    todayData.endDay();
 
-  const intervalID = setInterval(() => {
+    await saveTodayData(todayData);
+  }
+  todayData = await loadTodayData();
+  const intervalID = setInterval(async () => {
     if (currentData.incrementStreakTime()) {
       todayData.finishStreak();
       currentData.endStreak();
+      createPopup("streak");
       startBreak();
       clearInterval(intervalID);
     }
 
     if (todayData.incrementStreakTime()) {
       todayData.endDay();
+      await saveTodayData(todayData);
     }
     chrome.storage.onChanged.addListener(async (changes, area) => {
       if (area === "local" && changes.status) {
@@ -206,18 +210,16 @@ export async function incrementSeconds() {
         }
       }
     });
-    console.log(todayData.toJSON());
-    saveTodayData(todayData);
-    saveCurrentData(currentData);
+    await saveTodayData(todayData);
+    await saveCurrentData(currentData);
   }, 1000);
 }
 export async function incrementBreakTime() {
   const currentData = await loadCurrentData();
-  const todayData = await loadTodayData();
-  console.log(todayData.toJSON());
-  const intervalID = setInterval(() => {
+  const intervalID = setInterval(async () => {
     if (currentData.incrementBreakTime()) {
       currentData.endBreak();
+      createPopup("break");
       startPreset("Start");
 
       clearInterval(intervalID);
@@ -231,35 +233,29 @@ export async function incrementBreakTime() {
         }
       }
     });
-    saveTodayData(todayData);
-    saveCurrentData(currentData);
+    await saveCurrentData(currentData);
   }, 1000);
 }
 export async function createPopup(type: string) {
   if (type === "break") {
-    chrome.windows.create({
-      url: "break.html",
-      type: "popup",
-    });
+    chrome.action.setPopup({ popup: "popup.html" });
   }
   if (type === "streak") {
-    chrome.windows.create({
-      url: "streak.html",
-      type: "popup",
-    });
+    chrome.action.setPopup({ popup: "popup.html" });
   }
   if (type === "end") {
-    chrome.windows.create({
-      url: "end.html",
-      type: "popup",
-    });
+    chrome.action.setPopup({ popup: "popup.html" });
   }
+  setTimeout(() => {
+    chrome.action.setPopup({ popup: "index.html" });
+  }, 3000);
 }
 export async function endSession() {
   console.log("Session ended");
   const currentData = await loadCurrentData();
   const todayData = await loadTodayData();
   currentData.endSession();
-  saveTodayData(todayData);
-  saveCurrentData(currentData);
+  await saveTodayData(todayData);
+  await saveCurrentData(currentData);
 }
+//TODO: Add way to dynamivly change text size so that the 0s dont look diffent when the app is started-thanks sheyu

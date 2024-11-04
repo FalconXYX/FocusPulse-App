@@ -157,7 +157,7 @@ export class CurrentStreakData {
   }
 }
 export class DayStreakData {
-  dateStarted: Date;
+  dateStarted: number;
   timeActive: number;
   streaksDone: number;
   breaksTaken: number;
@@ -169,7 +169,7 @@ export class DayStreakData {
     this.breaksTaken = data.breaksTaken;
     this.timesIdle = data.timesIdle;
     this.streaksStarted = data.streaksStarted;
-    this.dateStarted = new Date(data.dateStarted);
+    this.dateStarted = data.dateStarted;
   }
   getTimeActive() {
     return this.timeActive;
@@ -214,12 +214,13 @@ export class DayStreakData {
     this.timesIdle = 0;
     this.timeActive = 0;
     this.streaksStarted = 0;
-    this.dateStarted = new Date();
+    this.dateStarted = new Date().getDate();
   }
   checkDay(): boolean {
-    if (this.dateStarted.getDate() !== new Date().getDate()) {
+    if (this.dateStarted != new Date().getDate()) {
       return true;
     }
+
     return false;
   }
   toJSON(): TodayData {
@@ -229,7 +230,7 @@ export class DayStreakData {
       breaksTaken: this.breaksTaken,
       timesIdle: this.timesIdle,
       streaksStarted: this.streaksStarted,
-      dateStarted: this.dateStarted.getDate(),
+      dateStarted: this.dateStarted,
     };
   }
 }

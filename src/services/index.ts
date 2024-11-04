@@ -8,10 +8,10 @@ import {
   incrementBreakTime,
 } from "./main";
 import { SetupPreset, SetupData, setupStatus } from "./setup";
-chrome.runtime.onInstalled.addListener((details) => {
+chrome.runtime.onInstalled.addListener(async (details) => {
   console.log("Extension installed with reason:", details.reason);
   SetupPreset(details.reason);
-  SetupData(details.reason);
+  await SetupData(details.reason);
   setupStatus();
 });
 

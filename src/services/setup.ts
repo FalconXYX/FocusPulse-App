@@ -1,3 +1,5 @@
+import { loadTodayData, saveTodayData } from "./main";
+
 const presetFileName = [
   "preset1.json",
   "preset2.json",
@@ -44,7 +46,7 @@ export const SetupPreset = (reason: string) => {
     }
   }
 };
-export const SetupData = (reason: string) => {
+export const SetupData = async (reason: string) => {
   if (reason === "install") {
     fetch(chrome.runtime.getURL("current.json"))
       .then((response) => {
@@ -80,6 +82,13 @@ export const SetupData = (reason: string) => {
       .catch((error) => {
         console.error("Failed to load JSON file:", error);
       });
+  } else {
+    const i = await loadTodayData();
+    if (i.checkDay()) {
+      i.endDay();
+      await saveTodayData(i);
+      console.log("Hi");
+    }
   }
 };
 export const setupStatus = () => {

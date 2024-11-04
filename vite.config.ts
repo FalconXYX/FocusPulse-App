@@ -9,14 +9,15 @@ export default defineConfig({
     assetsDir: ".",
     rollupOptions: {
       input: {
-        index: "./index.html",
+        index: "./index.html", // Main entry point (your existing one)
+        secondary: "./popup.html", // New HTML entry point
         background: "./src/services/index.ts",
         setup: "./src/services/setup.ts",
         presetService: "./src/services/presetService.ts",
         dataService: "./src/services/dataService.ts",
       },
       output: {
-        entryFileNames: `[name].js`,
+        entryFileNames: `[name].js`, // Keep existing naming
       },
     },
   },

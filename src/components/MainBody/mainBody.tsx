@@ -31,10 +31,9 @@ const MainBody: React.FC = () => {
     stat: "Inactive",
     currentBreakLength: 0,
     leeway: 0,
-    presetName: "",
+    presetName: "", // Holds the preset name for display
   });
 
-  // Add state to store the last active preset values
   const [lastActivePreset, setLastActivePreset] = useState({
     streakLength: 0,
     breakLength: 0,
@@ -48,18 +47,15 @@ const MainBody: React.FC = () => {
       const currentDayDataService = await loadTodayData();
       const status = await getStatus();
 
-      // If transitioning from active to inactive, store the current values
-      if (state.stat === "active" && status === "inactive") {
+      if (status === "inactive") {
         setLastActivePreset({
           streakLength: currentService.getStreakLength(),
           breakLength: currentService.getBreakLength(),
         });
       }
 
-      // Prepare the variables for timestamps
       let timeStamps;
       if (status === "active") {
-        // Use the current streak data for "active" status
         timeStamps = getTimeStamp(
           currentDataService.getStreakStart(),
           currentDataService.getStreakProgress()
@@ -80,7 +76,6 @@ const MainBody: React.FC = () => {
         timeCurrentActive: currentDataService?.getTimeActive() || 0,
         streakProgress: currentDataService?.getStreakProgress() || 0,
         breakProgress: currentDataService?.getBreakProgress() || 0,
-        // Use the last active preset values when inactive
         currentStreakLength:
           status === "inactive"
             ? lastActivePreset.streakLength || currentService.getStreakLength()
@@ -94,7 +89,7 @@ const MainBody: React.FC = () => {
         breaksTodayTaken: currentDayDataService?.getBreaksTaken() || 0,
         streaksStarted: currentDayDataService?.getStreaksStarted() || 0,
         streakEnd: currentDataService?.getCurrentStreakEnd().getTime() || 10,
-        timeStamps: timeStamps || "", // Set the calculated timestamps
+        timeStamps: timeStamps || "",
       };
 
       setState(newState);
@@ -103,7 +98,6 @@ const MainBody: React.FC = () => {
     }
   }, [state.stat, lastActivePreset]);
 
-  // Rest of the component remains the same
   useEffect(() => {
     const storageListener = () => {
       updateState();
@@ -120,7 +114,7 @@ const MainBody: React.FC = () => {
   useEffect(() => {
     let intervalId: number | undefined = undefined;
 
-    if (state.stat === "active" || state.stat === " break") {
+    if (state.stat === "active" || state.stat === "break") {
       intervalId = window.setInterval(updateState, 1000);
     }
 
@@ -172,8 +166,9 @@ const MainBody: React.FC = () => {
       alert("Cannot change preset while active.");
       return;
     }
+
     await changePreset(preset);
-    await updateState();
+    await updateState(); // Immediately update state after preset change
   };
 
   return (
@@ -183,7 +178,7 @@ const MainBody: React.FC = () => {
           streakLength={formatTime(state.currentStreakLength)}
           breakLength={formatTime(state.currentBreakLength)}
           leeway={formatTime(state.leeway)}
-          presetName={state.presetName}
+          presetName={state.presetName} // Display updated preset name
           statusStart={state.stat !== "inactive" ? "Pause" : "Start"}
         />
         <PresetButtons
