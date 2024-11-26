@@ -179,6 +179,10 @@ export async function startBreak() {
       console.log("Status successfully modified");
     }
   });
+  const audio = new Audio(chrome.runtime.getURL("notification.wav"));
+  audio.play().catch((error) => {
+    console.error("Error playing audio:", error);
+  });
 }
 export async function incrementSeconds() {
   const currentData = await loadCurrentData();

@@ -12,7 +12,7 @@
     "default_popup": "index.html",
     "default_icon": "Logo-128-Cg3Ef7_8.png"
   },
-  "permissions": ["scripting", "history", "storage", "idle", "notifications"],
+  "permissions": ["storage", "idle"],
   "background": {
     "service_worker": "background.js",
     "type": "module"
