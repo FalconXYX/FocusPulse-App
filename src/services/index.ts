@@ -1,3 +1,4 @@
+import { getImageUrl } from "../utils";
 import {
   incrementSeconds,
   endSession,
@@ -41,9 +42,19 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
     if (newStatus === "break") {
       //createPopup("break");
       incrementBreakTime();
+      playNotificationSound();
     }
     if (newStatus === "inactive") {
       console.log("Session ended");
     }
   }
 });
+
+function playNotificationSound() {
+  chrome.notifications.create({
+    type: "basic",
+    iconUrl: getImageUrl("Logo.png"), // Replace with your icon file
+    title: "Break Time",
+    message: "Your Streak Is Complete! Take a Break",
+  });
+}
