@@ -35,14 +35,17 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
   if (area === "local" && changes.status) {
     const newStatus = changes.status.newValue;
     if (newStatus === "active") {
+      playNotificationSound("Session started", "Your Session has started");
       incrementSeconds();
       const currentPreset = await loadPreset(await getCurrentPreset());
       chrome.idle.setDetectionInterval(currentPreset.getLeeway() / 1000);
     }
     if (newStatus === "break") {
-      //createPopup("break");
+      playNotificationSound(
+        "Break started",
+        "You have finished a streak, Take A break"
+      );
       incrementBreakTime();
-      playNotificationSound();
     }
     if (newStatus === "inactive") {
       console.log("Session ended");
@@ -50,11 +53,11 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
   }
 });
 
-function playNotificationSound() {
+function playNotificationSound(title: string, message: string) {
   chrome.notifications.create({
     type: "basic",
     iconUrl: getImageUrl("Logo.png"), // Replace with your icon file
-    title: "Break Time",
-    message: "Your Streak Is Complete! Take a Break",
+    title: title,
+    message: message,
   });
 }
